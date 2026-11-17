@@ -1,0 +1,23 @@
+<div class="container-narrow">
+  <div class="card">
+    <h2>短信验证码登录</h2>
+    <p class="muted">未注册的手机号验证通过后将自动注册。</p>
+
+    <%= form_with url: login_sms_code_path, method: :post, local: true do %>
+      <label for="phone">手机号</label>
+      <input type="text" name="phone" id="phone" value="<%= params[:phone] %>" placeholder="11 位手机号" maxlength="11">
+      <button type="submit" class="btn-secondary">获取验证码</button>
+    <% end %>
+
+    <hr style="border:none;border-top:1px solid #e2e8f0;margin:18px 0">
+
+    <%= form_with url: login_path, method: :post, local: true do %>
+      <label for="login_phone">手机号</label>
+      <input type="text" name="phone" id="login_phone" value="<%= params[:phone] %>" maxlength="11">
+      <label for="code">短信验证码</label>
+      <input type="text" name="code" id="code" placeholder="6 位验证码" maxlength="6">
+      <button type="submit">登录 / 注册</button>
+    <% end %>
+  </div>
+  <p class="muted" style="text-align:center">登录时系统将查询运营商侧号码入网时间，防范回收号盗登风险。</p>
+</div>

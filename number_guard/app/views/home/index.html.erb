@@ -1,0 +1,19 @@
+<div class="card">
+  <h2>我的账号</h2>
+  <table class="data">
+    <tr><th style="width:200px">手机号</th><td class="mono"><%= current_user.phone %></td></tr>
+    <tr><th>邮箱</th><td><%= current_user.email.presence || content_tag(:span, "未绑定", class: "muted") %></td></tr>
+    <tr><th>安全问题</th><td><%= current_user.security_question.presence || content_tag(:span, "未设置", class: "muted") %></td></tr>
+    <tr><th>最后一次确认手机号时间</th><td><%= l current_user.last_phone_confirmed_at, format: :long %></td></tr>
+    <tr><th>注册时间</th><td><%= l current_user.created_at, format: :long %></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>手机号归属确认</h2>
+  <p class="muted">
+    若你更换了手机号或长期未使用本号码，运营商可能将其回收转售。
+    确认“本号码仍归我所有”可刷新账号的手机号确认时间，降低被误判为回收号的风险。
+  </p>
+  <%= button_to "确认本号码仍归我所有", confirm_phone_path, method: :post, class: "btn btn-secondary" %>
+</div>

@@ -1,0 +1,35 @@
+<div class="card">
+  <h2>核验单 #<%= @verification.id %></h2>
+  <table class="data">
+    <tr><th style="width:200px">发起时间</th><td><%= l @verification.created_at, format: :long %></td></tr>
+    <tr><th>用户</th><td><%= link_to "用户 ##{@verification.user.id}", admin_user_path(@verification.user) %>（<span class="mono"><%= @verification.user.phone %></span>）</td></tr>
+    <tr><th>触发登录记录</th><td><%= link_to "风控记录 ##{@verification.login_attempt.id}", admin_login_attempt_path(@verification.login_attempt) %></td></tr>
+    <tr><th>核验方式</th><td><%= @verification.method_text %></td></tr>
+    <tr><th>状态</th><td><span class="tag <%= @verification.pending? ? 'tag-yellow' : (@verification.passed? ? 'tag-green' : 'tag-red') %>"><%= @verification.status_text %></span></td></tr>
+    <tr><th>处理时间</th><td><%= @verification.reviewed_at ? l(@verification.reviewed_at, format: :long) : "—" %></td></tr>
+    <% if @verification.applicant_note.present? %>
+      <tr><th>用户说明</th><td><%= simple_format @verification.applicant_note %></td></tr>
+    <% end %>
+    <% if @verification.admin_note.present? %>
+      <tr><th>处理备注</th><td><%= @verification.admin_note %></td></tr>
+    <% end %>
+  </table>
+</div>
+
+<% if @verification.method == "manual_review" && @verification.pending? %>
+  <div class="card">
+    <h2>人工审核处理</h2>
+    <%= form_with url: approve_admin_verification_path(@verification), method: :post, local: true do %>
+      <label for="approve_note">备注（可选）</label>
+      <input type="text" name="admin_note" id="approve_note" placeholder="例如：核对历史充值记录一致">
+      <button type="submit">审核通过（将更新用户手机号确认时间）</button>
+    <% end %>
+    <%= form_with url: reject_admin_verification_path(@verification), method: :post, local: true do %>
+      <label for="reject_note">拒绝原因</label>
+      <input type="text" name="admin_note" id="reject_note" placeholder="例如：无法提供有效归属证明">
+      <button type="submit" class="btn-danger">拒绝</button>
+    <% end %>
+  </div>
+<% end %>
+
+<p><%= link_to "← 返回列表", admin_verifications_path %></p>

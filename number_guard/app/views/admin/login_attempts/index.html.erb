@@ -1,0 +1,24 @@
+<div class="card">
+  <h2>登录风控记录</h2>
+  <p>
+    筛选：
+    <%= link_to "全部", admin_login_attempts_path %> |
+    <%= link_to "仅拦截", admin_login_attempts_path(decision: "blocked") %> |
+    <%= link_to "仅放行", admin_login_attempts_path(decision: "allowed") %>
+  </p>
+  <table class="data">
+    <tr><th>时间</th><th>手机号</th><th>判定</th><th>原因</th><th>运营商入网时间</th><th>账号确认时间</th><th>IP</th><th></th></tr>
+    <% @attempts.each do |a| %>
+      <tr>
+        <td><%= l a.created_at, format: :short %></td>
+        <td class="mono"><%= a.phone %></td>
+        <td><span class="tag <%= a.blocked? ? 'tag-red' : 'tag-green' %>"><%= a.blocked? ? "拦截" : "放行" %></span></td>
+        <td><%= a.reason_text %></td>
+        <td><%= a.carrier_activated_at ? l(a.carrier_activated_at, format: :short) : "—" %></td>
+        <td><%= a.phone_confirmed_at ? l(a.phone_confirmed_at, format: :short) : "—" %></td>
+        <td class="mono"><%= a.ip %></td>
+        <td><%= link_to "详情", admin_login_attempt_path(a) %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

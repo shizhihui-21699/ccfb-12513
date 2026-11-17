@@ -1,0 +1,34 @@
+<div class="stats">
+  <div class="stat"><div class="num"><%= @today_attempts.count %></div><div class="label">今日短信登录</div></div>
+  <div class="stat"><div class="num" style="color:#dc2626"><%= @today_blocked %></div><div class="label">今日拦截</div></div>
+  <div class="stat"><div class="num" style="color:#16a34a"><%= @today_allowed %></div><div class="label">今日放行</div></div>
+  <div class="stat"><div class="num" style="color:#ca8a04"><%= @pending_manual %></div><div class="label">待人工审核</div></div>
+  <div class="stat"><div class="num"><%= @pending_total %></div><div class="label">核验中</div></div>
+  <div class="stat"><div class="num" style="color:#16a34a"><%= @passed_total %></div><div class="label">累计核验通过</div></div>
+  <div class="stat"><div class="num" style="color:#dc2626"><%= @failed_total %></div><div class="label">累计核验失败</div></div>
+</div>
+
+<div class="card mt">
+  <h2>最近被拦截的登录</h2>
+  <% if @recent_blocked.any? %>
+    <table class="data">
+      <tr><th>时间</th><th>手机号</th><th>原因</th><th>运营商入网时间</th><th>账号确认时间</th><th>核验单</th></tr>
+      <% @recent_blocked.each do |a| %>
+        <tr>
+          <td><%= l a.created_at, format: :short %></td>
+          <td class="mono"><%= a.phone %></td>
+          <td><span class="tag tag-red"><%= a.reason_text %></span></td>
+          <td><%= a.carrier_activated_at ? l(a.carrier_activated_at, format: :short) : "—" %></td>
+          <td><%= a.phone_confirmed_at ? l(a.phone_confirmed_at, format: :short) : "—" %></td>
+          <td>
+            <% if a.verification %>
+              <%= link_to a.verification.status_text, admin_verification_path(a.verification) %>
+            <% else %>—<% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <p class="muted">暂无拦截记录。</p>
+  <% end %>
+</div>

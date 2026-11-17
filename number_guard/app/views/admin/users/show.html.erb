@@ -1,0 +1,38 @@
+<div class="card">
+  <h2>用户 #<%= @user.id %></h2>
+  <table class="data">
+    <tr><th style="width:200px">手机号</th><td class="mono"><%= @user.phone %></td></tr>
+    <tr><th>邮箱</th><td><%= @user.email.presence || "—" %></td></tr>
+    <tr><th>安全问题</th><td><%= @user.security_question.presence || "—" %></td></tr>
+    <tr><th>最后确认手机号时间</th><td><%= l @user.last_phone_confirmed_at, format: :long %></td></tr>
+    <tr><th>注册时间</th><td><%= l @user.created_at, format: :long %></td></tr>
+    <% if @carrier_record %>
+      <tr><th>运营商(模拟)</th><td><%= @carrier_record.carrier_name %>（<%= @carrier_record.status_text %>）</td></tr>
+      <tr><th>运营商入网时间</th><td><%= l @carrier_record.activated_at, format: :long %></td></tr>
+    <% else %>
+      <tr><th>运营商数据</th><td class="muted">无（模拟库中不存在该号码）</td></tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="card">
+  <h2>登录风控记录</h2>
+  <% if @attempts.any? %>
+    <table class="data">
+      <tr><th>时间</th><th>判定</th><th>原因</th><th>IP</th><th></th></tr>
+      <% @attempts.each do |a| %>
+        <tr>
+          <td><%= l a.created_at, format: :short %></td>
+          <td><span class="tag <%= a.blocked? ? 'tag-red' : 'tag-green' %>"><%= a.blocked? ? "拦截" : "放行" %></span></td>
+          <td><%= a.reason_text %></td>
+          <td class="mono"><%= a.ip %></td>
+          <td><%= link_to "详情", admin_login_attempt_path(a) %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <p class="muted">暂无记录。</p>
+  <% end %>
+</div>
+
+<p><%= link_to "← 返回用户列表", admin_users_path %></p>

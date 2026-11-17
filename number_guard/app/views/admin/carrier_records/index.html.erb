@@ -1,0 +1,20 @@
+<div class="card">
+  <h2>运营商数据（本地模拟）</h2>
+  <p class="muted">真实场景中由运营商接口提供，这里本地维护用于演示“号码回收后再入网”的场景。</p>
+  <p><%= link_to "＋ 录入号码", new_admin_carrier_record_path %></p>
+  <table class="data">
+    <tr><th>手机号</th><th>运营商</th><th>入网时间</th><th>状态</th><th></th></tr>
+    <% @records.each do |r| %>
+      <tr>
+        <td class="mono"><%= r.phone %></td>
+        <td><%= r.carrier_name %></td>
+        <td><%= l r.activated_at, format: :long %></td>
+        <td><span class="tag <%= r.status == 'in_service' ? 'tag-green' : 'tag-gray' %>"><%= r.status_text %></span></td>
+        <td>
+          <%= link_to "编辑", edit_admin_carrier_record_path(r) %>
+          <%= button_to "删除", admin_carrier_record_path(r), method: :delete, class: "btn btn-small btn-danger", form: { style: "display:inline" }, data: { confirm: "确定删除？" } %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+</div>

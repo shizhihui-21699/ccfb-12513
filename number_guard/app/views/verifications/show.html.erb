@@ -1,0 +1,74 @@
+<div class="container-narrow" style="max-width:640px">
+  <div class="card">
+    <h2>身份核验</h2>
+    <p>
+      手机号 <span class="mono"><%= @verification.user.phone %></span>
+      的运营商入网时间为
+      <strong><%= @verification.login_attempt.carrier_activated_at ? l(@verification.login_attempt.carrier_activated_at, format: :long) : "未知" %></strong>，
+      晚于账号最后确认时间
+      <strong><%= @verification.login_attempt.phone_confirmed_at ? l(@verification.login_attempt.phone_confirmed_at, format: :long) : "未知" %></strong>。
+    </p>
+    <p class="muted">该号码可能被运营商回收并转售。为保护账号原主人，短信登录已暂停，请通过以下任一方式核验身份。核验通过后将重新确认手机号归属并恢复登录。</p>
+    <p>当前状态：<span class="tag <%= @verification.pending? ? 'tag-yellow' : (@verification.passed? ? 'tag-green' : 'tag-red') %>"><%= @verification.status_text %></span>
+      <% if @verification.method.present? %>（方式：<%= @verification.method_text %>）<% end %>
+    </p>
+    <% if @verification.admin_note.present? %>
+      <p class="muted">处理备注：<%= @verification.admin_note %></p>
+    <% end %>
+  </div>
+
+  <% if @verification.pending? %>
+
+    <div class="method-box">
+      <h3>方式一：邮箱验证码</h3>
+      <% if @verification.user.email.present? %>
+        <p class="muted">向绑定邮箱发送验证码。</p>
+        <%= button_to "发送邮箱验证码", start_email_code_verification_path(@verification), method: :post, class: "btn btn-secondary btn-small" %>
+        <% if @email_code_sent %>
+          <%= form_with url: verify_email_code_verification_path(@verification), method: :post, local: true do %>
+            <label for="email_code">邮箱验证码</label>
+            <input type="text" name="email_code" id="email_code" maxlength="6" placeholder="6 位验证码">
+            <button type="submit">提交核验</button>
+          <% end %>
+        <% end %>
+      <% else %>
+        <p class="muted">该账号未绑定邮箱，不可用。</p>
+      <% end %>
+    </div>
+
+    <div class="method-box">
+      <h3>方式二：安全问题</h3>
+      <% if @verification.user.security_question.present? %>
+        <p>问题：<strong><%= @verification.user.security_question %></strong></p>
+        <%= form_with url: verify_security_question_verification_path(@verification), method: :post, local: true do %>
+          <label for="security_answer">答案</label>
+          <input type="text" name="security_answer" id="security_answer">
+          <button type="submit">提交核验</button>
+        <% end %>
+      <% else %>
+        <p class="muted">该账号未设置安全问题，不可用。</p>
+      <% end %>
+    </div>
+
+    <div class="method-box">
+      <h3>方式三：人工审核</h3>
+      <% if @verification.method == "manual_review" %>
+        <p class="muted">已提交人工审核，请等待运营处理。你的说明：</p>
+        <p><%= @verification.applicant_note %></p>
+      <% else %>
+        <p class="muted">提交账号使用说明（如历史登录地、常用设备、注册时间等），由运营人工审核。</p>
+        <%= form_with url: submit_manual_review_verification_path(@verification), method: :post, local: true do %>
+          <label for="applicant_note">情况说明</label>
+          <textarea name="applicant_note" id="applicant_note" placeholder="请描述能证明你是账号主人的信息，至少 10 个字"></textarea>
+          <button type="submit">提交人工审核</button>
+        <% end %>
+      <% end %>
+    </div>
+
+  <% elsif @verification.failed? %>
+    <div class="card">
+      <p>本次核验未通过。如有疑问请联系客服。</p>
+      <p><%= link_to "返回登录页", login_path %></p>
+    </div>
+  <% end %>
+</div>

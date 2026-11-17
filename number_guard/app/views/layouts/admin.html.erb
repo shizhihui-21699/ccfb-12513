@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NumberGuard 运营后台</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+  <body>
+    <div class="topnav">
+      <span class="brand">NumberGuard 运营后台</span>
+      <%= link_to "概览", admin_root_path %>
+      <%= link_to "登录风控记录", admin_login_attempts_path %>
+      <%= link_to "身份核验单", admin_verifications_path %>
+      <%= link_to "用户", admin_users_path %>
+      <%= link_to "运营商数据(模拟)", admin_carrier_records_path %>
+      <span class="spacer"></span>
+      <%= link_to "返回前台", root_path %>
+    </div>
+    <div class="container">
+      <% flash.each do |type, msg| %>
+        <div class="flash flash-<%= type %>"><%= msg %></div>
+      <% end %>
+      <%= yield %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+<div class="card">
+  <h2>登录风控记录 #<%= @attempt.id %></h2>
+  <table class="data">
+    <tr><th style="width:200px">时间</th><td><%= l @attempt.created_at, format: :long %></td></tr>
+    <tr><th>手机号</th><td class="mono"><%= @attempt.phone %></td></tr>
+    <tr><th>用户</th><td><%= @attempt.user ? link_to("用户 ##{@attempt.user.id}", admin_user_path(@attempt.user)) : "未注册" %></td></tr>
+    <tr><th>判定</th><td><span class="tag <%= @attempt.blocked? ? 'tag-red' : 'tag-green' %>"><%= @attempt.blocked? ? "拦截" : "放行" %></span></td></tr>
+    <tr><th>原因</th><td><%= @attempt.reason_text %></td></tr>
+    <tr><th>运营商入网时间</th><td><%= @attempt.carrier_activated_at ? l(@attempt.carrier_activated_at, format: :long) : "—" %></td></tr>
+    <tr><th>账号确认时间</th><td><%= @attempt.phone_confirmed_at ? l(@attempt.phone_confirmed_at, format: :long) : "—" %></td></tr>
+    <tr><th>IP</th><td class="mono"><%= @attempt.ip %></td></tr>
+    <tr><th>User-Agent</th><td class="mono"><%= @attempt.user_agent %></td></tr>
+  </table>
+  <% if @verification %>
+    <p class="mt">关联核验单：<%= link_to "核验单 ##{@verification.id}（#{@verification.status_text}）", admin_verification_path(@verification) %></p>
+  <% end %>
+  <p class="mt"><%= link_to "← 返回列表", admin_login_attempts_path %></p>
+</div>

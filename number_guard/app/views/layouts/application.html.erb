@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>NumberGuard · 号码回收风险防护</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+  <body>
+    <div class="topnav">
+      <span class="brand">NumberGuard</span>
+      <% if logged_in? %>
+        <%= link_to "我的账号", root_path %>
+        <span class="spacer"></span>
+        <span class="muted" style="color:#94a3b8"><%= current_user.phone %></span>
+        <%= button_to "退出登录", logout_path, method: :delete, class: "btn btn-small btn-secondary", form: { style: "display:inline" } %>
+      <% end %>
+    </div>
+    <div class="container">
+      <% flash.each do |type, msg| %>
+        <div class="flash flash-<%= type %>"><%= msg %></div>
+      <% end %>
+      <%= yield %>
+    </div>
+  </body>
+</html>

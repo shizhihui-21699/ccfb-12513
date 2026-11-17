@@ -1,0 +1,17 @@
+<div class="card">
+  <h2>用户列表</h2>
+  <table class="data">
+    <tr><th>ID</th><th>手机号</th><th>邮箱</th><th>安全问题</th><th>最后确认手机号时间</th><th>注册时间</th><th></th></tr>
+    <% @users.each do |u| %>
+      <tr>
+        <td><%= u.id %></td>
+        <td class="mono"><%= u.phone %></td>
+        <td><%= u.email.presence || "—" %></td>
+        <td><%= u.security_question.present? ? "已设置" : "—" %></td>
+        <td><%= l u.last_phone_confirmed_at, format: :short %></td>
+        <td><%= l u.created_at, format: :short %></td>
+        <td><%= link_to "详情", admin_user_path(u) %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>

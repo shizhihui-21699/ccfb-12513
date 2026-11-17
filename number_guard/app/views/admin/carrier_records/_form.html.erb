@@ -1,0 +1,20 @@
+<div class="card" style="max-width:560px">
+  <h2><%= @record.persisted? ? "编辑" : "录入" %>运营商数据</h2>
+  <% if @record.errors.any? %>
+    <div class="error-messages">
+      <% @record.errors.full_messages.each do |msg| %><div><%= msg %></div><% end %>
+    </div>
+  <% end %>
+  <%= form_with model: [:admin, @record], local: true do |f| %>
+    <label>手机号</label>
+    <%= f.text_field :phone, maxlength: 11 %>
+    <label>运营商</label>
+    <%= f.select :carrier_name, CarrierRecord::CARRIERS %>
+    <label>入网时间</label>
+    <%= f.datetime_local_field :activated_at %>
+    <label>状态</label>
+    <%= f.select :status, [["在用", "in_service"], ["已销户", "cancelled"]] %>
+    <button type="submit">保存</button>
+  <% end %>
+  <p class="mt"><%= link_to "← 返回列表", admin_carrier_records_path %></p>
+</div>
